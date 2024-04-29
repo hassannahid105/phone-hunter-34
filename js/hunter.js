@@ -8,7 +8,7 @@ const loadData = async (searchText) => {
 };
 
 // ! phone data  display
-const displayPhone = (phones) => {
+const displayPhone = (phones, all) => {
   const phoneContainer = document.getElementById("phone-container");
   const showBtn = document.getElementById("show-btn");
   phoneContainer.textContent = "";
@@ -16,6 +16,8 @@ const displayPhone = (phones) => {
   if (phones.length > 9) {
     phones = phones.slice(0, 9);
     showBtn.classList.remove("hidden");
+  } else if (all) {
+    console.log("i can do it");
   } else {
     showBtn.classList.add("hidden");
   }
@@ -38,13 +40,27 @@ const displayPhone = (phones) => {
     `;
     phoneContainer.appendChild(createDiv);
   });
+  spinner(false);
 };
 //! search impliment
 const searchText = () => {
   const search = document.getElementById("search");
   const searchValue = search.value;
   loadData(searchValue);
+  spinner(true);
+  //
+};
+// ! spinner
+const spinner = (id) => {
+  const spin = document.getElementById("spinner");
+  if (id) {
+    spin.classList.remove("hidden");
+  } else {
+    spin.classList.add("hidden");
+  }
 };
 //! show all
-const showAll = () => {};
+const showAll = () => {
+  loadData();
+};
 loadData("iphone");
