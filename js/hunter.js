@@ -1,25 +1,25 @@
-const loadData = async (searchText) => {
+const loadData = async (searchText, isShowAll) => {
   const response = await fetch(
     `https://openapi.programming-hero.com/api/phones?search=${searchText}`
   );
   const data = await response.json();
   const phones = data.data;
-  displayPhone(phones);
+  displayPhone(phones, isShowAll);
 };
 
 // ! phone data  display
-const displayPhone = (phones, all) => {
+const displayPhone = (phones, isShowAll) => {
   const phoneContainer = document.getElementById("phone-container");
   const showBtn = document.getElementById("show-btn");
   phoneContainer.textContent = "";
   // * phones value reassign
-  if (phones.length > 9) {
-    phones = phones.slice(0, 9);
+  if (phones.length > 9 && !isShowAll) {
     showBtn.classList.remove("hidden");
-  } else if (all) {
-    console.log("i can do it");
   } else {
     showBtn.classList.add("hidden");
+  }
+  if (!isShowAll) {
+    phones = phones.slice(0, 9);
   }
   // !  display
   phones.forEach((phone) => {
@@ -35,7 +35,7 @@ const displayPhone = (phones, all) => {
             <div class="card-body">
               <h2 class="card-title">${phone.phone_name}</h2>
               <div class="card-actions justify-end">
-                <button class="btn btn-primary w-full text-xl font-bold text-white">Details</button>
+                <button class="btn btn-primary w-full text-xl font-bold text-white" id="${phone.slug}" onclick="showDetails()">Details</button>
               </div>   
     `;
     phoneContainer.appendChild(createDiv);
@@ -43,10 +43,10 @@ const displayPhone = (phones, all) => {
   spinner(false);
 };
 //! search impliment
-const searchText = () => {
+const searchText = (isShowAll) => {
   const search = document.getElementById("search");
   const searchValue = search.value;
-  loadData(searchValue);
+  loadData(searchValue, isShowAll);
   spinner(true);
   //
 };
@@ -60,7 +60,17 @@ const spinner = (id) => {
   }
 };
 //! show all
-const showAll = () => {
-  loadData();
+const showAll = (isShowAll) => {
+  searchText(true);
+  loadData("iphone", true);
 };
 loadData("iphone");
+
+// ! details button modal show
+const showDetails = async () => {
+  const singlePhone = await fetch(
+    "https://openapi.programming-hero.com/api/phone/apple_iphone_12-10509"
+  );
+  const response = await singlePhone.json();
+  console.log(response);
+};
